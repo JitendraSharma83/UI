@@ -1,8 +1,19 @@
-trigger: none 
-pool: Default
+trigger: none
 
-steps: 
+pool: poolgame
+
+steps:
+- task: NodeTool@0
+  displayName: TooL Nodejs
+  inputs:
+    versionSource: 'spec'
+    versionSpec: '16.x'
+- task: PowerShell@2
+  displayName: npm install
+  inputs:
+    targetType: 'inline'
+    script: 'npm install'
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
-    script: 'Write-Host "Hello World"'
+    script: 'npm run build'
