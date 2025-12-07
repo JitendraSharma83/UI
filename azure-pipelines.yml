@@ -7,10 +7,13 @@ steps:
   displayName: Biome Lint
   inputs:
     targetType: 'inline'
-    
     script: |
       cd "$(System.DefaultWorkingDirectory)\src"
-      npx biome lint .
+      Write-Host "Current folder: $(pwd)"
+      Write-Host "Files inside src folder:"
+       ls
+       Write-Host "Running Biome Lint..."
+       npx biome lint .
 
 # - task: NodeTool@0
 #   displayName: TooL Nodejs
