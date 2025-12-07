@@ -7,8 +7,9 @@ steps:
   displayName: Biome Lint
   inputs:
     targetType: 'inline'
+    
     script: |
-      cd "$(System.DefaultWorkingDirectory)/src"
+      cd "$(System.DefaultWorkingDirectory)\src"
       npx biome lint .
 
 # - task: NodeTool@0
