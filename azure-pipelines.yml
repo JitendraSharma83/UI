@@ -3,6 +3,12 @@ trigger: none
 pool: poolgame
 
 steps:
+- task: PowerShell@2
+  displayName: lint
+  inputs:
+    targetType: 'inline'
+    script: 'biome lint .\src\'
+
 - task: NodeTool@0
   displayName: TooL Nodejs
   inputs:
@@ -16,4 +22,4 @@ steps:
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
-    script: 'npm run build'
+    script: 'npm run build -y'
