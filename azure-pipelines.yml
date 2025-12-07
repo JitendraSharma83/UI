@@ -9,12 +9,16 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      cd "$(System.DefaultWorkingDirectory)\src"
+      cd "$(System.DefaultWorkingDirectory)"
       Write-Host "Current folder: $(pwd)"
-      Write-Host "Files inside src folder:"
+      Write-Host "Listing project root:"
       ls
-      Write-Host "Running Biome Lint..."
-      npx biome lint . --ignore-missing-config
+
+      Write-Host "Listing src:"
+      ls src
+
+      Write-Host "Running Biome..."
+      npx biome lint src
 
 
 # - task: NodeTool@0
