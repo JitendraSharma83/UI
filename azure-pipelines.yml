@@ -4,10 +4,11 @@ pool: poolgame
 
 steps:
 - task: PowerShell@2
-  displayName: lint
   inputs:
     targetType: 'inline'
-    script: npx biome lint ./src
+    script: |
+      cd $(System.DefaultWorkingDirectory)/UI/src
+      npx biome lint
 
 # - task: NodeTool@0
 #   displayName: TooL Nodejs
