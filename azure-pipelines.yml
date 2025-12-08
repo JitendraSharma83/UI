@@ -4,21 +4,9 @@ pool: poolgame
 
 steps:
 - task: PowerShell@2
-  displayName: Biome Lint
-  continueOnError: true
   inputs:
     targetType: 'inline'
-    script: |
-      cd "$(System.DefaultWorkingDirectory)"
-      Write-Host "Current folder: $(pwd)"
-      Write-Host "Listing project root:"
-      ls
-
-      Write-Host "Listing src:"
-      ls src
-
-      Write-Host "Running Biome..."
-      npx biome lint src
+    script: 'biome lint $(System.DefaultDirectory)/src'
 
 
 # - task: NodeTool@0
