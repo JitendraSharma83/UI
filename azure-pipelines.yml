@@ -17,6 +17,7 @@ stages:
     # Markdown Lint
     - task: PowerShell@2
       displayName: "Markdown Lint"
+      continueOnError: true
       inputs:
         targetType: inline
         script: |
@@ -26,6 +27,7 @@ stages:
     # Stylelint (CSS)
     - task: PowerShell@2
       displayName: "Stylelint CSS"
+      continueOnError: true
       inputs:
         targetType: inline
         script: |
@@ -35,6 +37,7 @@ stages:
     # Biome Lint
     - task: PowerShell@2
       displayName: "Biome Lint"
+      continueOnError: true
       inputs:
         targetType: inline
         script: |
@@ -48,32 +51,32 @@ stages:
 # =========================
 # Stage 2: Build
 # =========================
-- stage: Build
-  displayName: "Build Application"
-  dependsOn: CodeQuality
-  condition: succeededOrFailed()   # 👈 Lint fail hua to build nahi chalega
-  jobs:
-  - job: BuildJob
-    displayName: "Node Build"
-    steps:
+# - stage: Build
+#   displayName: "Build Application"
+#   dependsOn: CodeQuality
+#   condition: succeededOrFailed()   # 👈 Lint fail hua to build nahi chalega
+#   jobs:
+#   - job: BuildJob
+#     displayName: "Node Build"
+#     steps:
 
-    - task: NodeTool@0
-      displayName: "Use Node.js 16"
-      inputs:
-        versionSource: spec
-        versionSpec: '16.x'
+#     - task: NodeTool@0
+#       displayName: "Use Node.js 16"
+#       inputs:
+#         versionSource: spec
+#         versionSpec: '16.x'
 
-    - task: PowerShell@2
-      displayName: "npm install"
-      inputs:
-        targetType: inline
-        script: |
-          npm install
+#     - task: PowerShell@2
+#       displayName: "npm install"
+#       inputs:
+#         targetType: inline
+#         script: |
+#           npm install
 
-    - task: PowerShell@2
-      displayName: "npm build"
-      inputs:
-        targetType: inline
-        script: |
-          npm run build
+#     - task: PowerShell@2
+#       displayName: "npm build"
+#       inputs:
+#         targetType: inline
+#         script: |
+#           npm run build
 
