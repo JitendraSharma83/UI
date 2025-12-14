@@ -15,7 +15,8 @@ steps:
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
-    script: '"$(Agent.ToolsDirectory)\biome-win32-x64.exe" lint "$(System.DefaultWorkingDirectory)/src"'
+    script: '"$(Agent.ToolsDirectory)\biome-win32-x64.exe" lint "$(System.DefaultWorkingDirectory)\src"'
+
 
 
 # - task: PowerShell@2
