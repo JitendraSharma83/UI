@@ -3,15 +3,13 @@ trigger: none
 pool: poolgame
 
 steps:
-# - task: PowerShell@2
-#   inputs:
-#     targetType: 'inline'
-#     script: |
-#       Invoke-WebRequest `
-#                     -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" `
-#                     -OutFile "$(Agent.ToolsDirectory)\biome-win32-x64.exe"
-      
-            # & "$(Agent.ToolsDirectory)\biome-win32-x64.exe" --version
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      npm add -D stylelint stylelint-config-standard "$(System.DefaultWorkingDirectory)" 
+      npx stylelint "**/*.css" "$(System.DefaultWorkingDirectory)"
+
 # - task: PowerShell@2
 #   displayName: Run Biome Lint
 #   inputs:
@@ -23,16 +21,6 @@ steps:
 #       & $biome --version
 #       & $biome lint $src
 
-- task: PowerShell@2
-  displayName: biome(javascript) tool download
-  inputs:
-    targetType: 'inline'
-    script: |
-     Invoke-WebRequest `
-      -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" `
-      -OutFile "$(Agent.ToolsDirectory)\biome.exe"
-
-     & "$(Agent.ToolsDirectory)\biome.exe" lint "$(Build.SourcesDirectory)\src"  
      
 # - task: PowerShell@2
 #   displayName: Static Analysis (SonarQube)
@@ -43,13 +31,6 @@ steps:
 #         -D sonar.host.url=http://localhost:9000 `
 #         -D sonar.token=sqp_afeeb01fc73b76405c934e2d6a541722cb55567e `
 #         -D sonar.projectKey=ui-project
-
-# - task: PowerShell@2
-#   inputs:
-#     targetType: 'inline'
-#     script: |
-#       npm init -y
-#       npm install stylelint stylelint-config-standard --save-dev
 
 # - task: NodeTool@0
 #   displayName: TooL Nodejs
