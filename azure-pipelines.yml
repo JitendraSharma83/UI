@@ -3,20 +3,20 @@ trigger: none
 pool: poolgame
 
 steps:
-- task: PowerShell@2
-  inputs:
-    targetType: 'inline'
-    script: |
-      Invoke-WebRequest `
-                    -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" `
-                    -OutFile "$(Agent.ToolsDirectory)\biome-win32-x64.exe"
+# - task: PowerShell@2
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#       Invoke-WebRequest `
+#                     -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" `
+#                     -OutFile "$(Agent.ToolsDirectory)\biome-win32-x64.exe"
       
             # & "$(Agent.ToolsDirectory)\biome-win32-x64.exe" --version
-    
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
-    script: 'biome lint "$(System.DefaultWorkingDirectory)/src"'
+    script: '"$(Agent.ToolsDirectory)\biome-win32-x64.exe" lint "$(System.DefaultWorkingDirectory)/src"'
+
 
 # - task: PowerShell@2
 #   displayName: Static Analysis (SonarQube)
