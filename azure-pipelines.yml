@@ -3,28 +3,28 @@ trigger: none
 pool: poolgame
 
 steps:
-- task: PowerShell@2
-  displayName: Static Analysis (SonarQube)
-  inputs:
-    targetType: 'inline'
-    script: |
-      sonar-scanner `
-        -D sonar.host.url=http://localhost:9000 `
-        -D sonar.token=sqp_afeeb01fc73b76405c934e2d6a541722cb55567e `
-        -D sonar.projectKey=ui-project
-- task: PowerShell@2
-  inputs:
-    targetType: 'inline'
-    script: |
-      npm init -y
-      npm install stylelint stylelint-config-standard --save-dev
-
+# - task: PowerShell@2
+#   displayName: Static Analysis (SonarQube)
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#       sonar-scanner `
+#         -D sonar.host.url=http://localhost:9000 `
+#         -D sonar.token=sqp_afeeb01fc73b76405c934e2d6a541722cb55567e `
+#         -D sonar.projectKey=ui-project
 # - task: PowerShell@2
 #   inputs:
 #     targetType: 'inline'
 #     script: |
-#       npm install -g @biomejs/biome
-#       biome lint "$(System.DefaultWorkingDirectory)/src"
+#       npm init -y
+#       npm install stylelint stylelint-config-standard --save-dev
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      npm install -g @biomejs/biome
+      biome lint "$(System.DefaultWorkingDirectory)/src"
 
 # - task: NodeTool@0
 #   displayName: TooL Nodejs
