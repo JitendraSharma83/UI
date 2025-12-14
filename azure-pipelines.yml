@@ -13,9 +13,15 @@ steps:
       
             # & "$(Agent.ToolsDirectory)\biome-win32-x64.exe" --version
 - task: PowerShell@2
+  displayName: Run Biome Lint
   inputs:
-    targetType: 'inline'
-    script: '"$(Agent.ToolsDirectory)\biome-win32-x64.exe" lint "$(System.DefaultWorkingDirectory)\src"'
+    targetType: inline
+    script: |
+      $biome = "$(Agent.ToolsDirectory)\biome-win32-x64.exe"
+      $src   = "$(System.DefaultWorkingDirectory)\src"
+
+      & $biome --version
+      & $biome lint $src
 
 
 
