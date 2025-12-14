@@ -7,8 +7,15 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      npm add -D stylelint stylelint-config-standard "$(System.DefaultWorkingDirectory)" 
-      npx stylelint "**/*.css" "$(System.DefaultWorkingDirectory)"
+      npm install -g markdownlint-cli "$(System.DefaultWorkingDirectory)"
+      markdownlint "$(System.DefaultWorkingDirectory)"
+
+# - task: PowerShell@2
+#   inputs:
+#     targetType: 'inline'
+#     script: |
+#       npm add -D stylelint stylelint-config-standard "$(System.DefaultWorkingDirectory)" 
+#       npx stylelint "**/*.css" "$(System.DefaultWorkingDirectory)"
 
 # - task: PowerShell@2
 #   displayName: Run Biome Lint
