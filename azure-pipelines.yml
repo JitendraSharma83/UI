@@ -10,7 +10,7 @@ steps:
       Invoke-WebRequest `
           -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" `
           -OutFile "$(Agent.ToolsDirectory)\biome-win32-x64.exe"
-           biome-win32-x64.exe --version
+           "$(Agent.ToolsDirectory)\biome-win32-x64.exe" --version
     
 
 # - task: PowerShell@2
