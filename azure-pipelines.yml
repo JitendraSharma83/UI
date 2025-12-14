@@ -12,19 +12,28 @@ steps:
 #                     -OutFile "$(Agent.ToolsDirectory)\biome-win32-x64.exe"
       
             # & "$(Agent.ToolsDirectory)\biome-win32-x64.exe" --version
+# - task: PowerShell@2
+#   displayName: Run Biome Lint
+#   inputs:
+#     targetType: inline
+#     script: |
+#       $biome = "$(Agent.ToolsDirectory)\biome-win32-x64.exe"
+#       $src   = "$(System.DefaultWorkingDirectory)\src"
+
+#       & $biome --version
+#       & $biome lint $src
+
 - task: PowerShell@2
-  displayName: Run Biome Lint
+  displayName: biome(javascript) tool download
   inputs:
-    targetType: inline
+    targetType: 'inline'
     script: |
-      $biome = "$(Agent.ToolsDirectory)\biome-win32-x64.exe"
-      $src   = "$(System.DefaultWorkingDirectory)\src"
+     Invoke-WebRequest `
+      -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" `
+      -OutFile "$(Agent.ToolsDirectory)\biome.exe"
 
-      & $biome --version
-      & $biome lint $src
-
-
-
+     & "$(Agent.ToolsDirectory)\biome.exe" lint "$(Build.SourcesDirectory)\src"  
+     
 # - task: PowerShell@2
 #   displayName: Static Analysis (SonarQube)
 #   inputs:
