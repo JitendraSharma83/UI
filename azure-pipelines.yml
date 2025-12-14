@@ -7,14 +7,9 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      - task: PowerShell@2
-        displayName: Install & Verify Biome
-        inputs:
-          targetType: inline
-          script: |
-            Invoke-WebRequest `
-              -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" `
-              -OutFile "$(Agent.ToolsDirectory)\biome-win32-x64.exe"
+      Invoke-WebRequest `
+                    -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" `
+                    -OutFile "$(Agent.ToolsDirectory)\biome-win32-x64.exe"
       
             # & "$(Agent.ToolsDirectory)\biome-win32-x64.exe" --version
     
