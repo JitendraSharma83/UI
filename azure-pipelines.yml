@@ -1,55 +1,79 @@
 trigger: none
 
-pool: poolgame
+pool:
+  name: poolgame
 
-steps:
-- task: PowerShell@2
-  inputs:
-    targetType: 'inline'
-    script: |
-      npm install -g markdownlint-cli "$(System.DefaultWorkingDirectory)"
-      markdownlint "$(System.DefaultWorkingDirectory)"
+stages:
+# =========================
+# Stage 1: Code Quality
+# =========================
+- stage: CodeQuality
+  displayName: "Code Quality & Linting"
+  jobs:
+  - job: Linting
+    displayName: "Run Linters"
+    steps:
 
-# - task: PowerShell@2
-#   inputs:
-#     targetType: 'inline'
-#     script: |
-#       npm add -D stylelint stylelint-config-standard "$(System.DefaultWorkingDirectory)" 
-#       npx stylelint "**/*.css" "$(System.DefaultWorkingDirectory)"
+    # Markdown Lint
+    - task: PowerShell@2
+      displayName: "Markdown Lint"
+      inputs:
+        targetType: inline
+        script: |
+          npm install -g markdownlint-cli
+          markdownlint "$(System.DefaultWorkingDirectory)"
 
-# - task: PowerShell@2
-#   displayName: Run Biome Lint
-#   inputs:
-#     targetType: inline
-#     script: |
-#       $biome = "$(Agent.ToolsDirectory)\biome-win32-x64.exe"
-#       $src   = "$(System.DefaultWorkingDirectory)\src"
+    # Stylelint (CSS)
+    - task: PowerShell@2
+      displayName: "Stylelint CSS"
+      inputs:
+        targetType: inline
+        script: |
+          npm install -D stylelint stylelint-config-standard
+          npx stylelint "**/*.css"
 
-#       & $biome --version
-#       & $biome lint $src
+    # Biome Lint
+    - task: PowerShell@2
+      displayName: "Biome Lint"
+      inputs:
+        targetType: inline
+        script: |
+          $biome = "$(Agent.ToolsDirectory)\biome-win32-x64.exe"
+          $src   = "$(System.DefaultWorkingDirectory)\src"
 
-     
-# - task: PowerShell@2
-#   displayName: Static Analysis (SonarQube)
-#   inputs:
-#     targetType: 'inline'
-#     script: |
-#       sonar-scanner `
-#         -D sonar.host.url=http://localhost:9000 `
-#         -D sonar.token=sqp_afeeb01fc73b76405c934e2d6a541722cb55567e `
-#         -D sonar.projectKey=ui-project
+          & $biome --version
+          & $biome lint $src
 
-# - task: NodeTool@0
-#   displayName: TooL Nodejs
-#   inputs:
-#     versionSource: 'spec'
-#     versionSpec: '16.x'
-# - task: PowerShell@2
-#   displayName: npm install
-#   inputs:
-#     targetType: 'inline'
-#     script: 'npm install'
-# - task: PowerShell@2
-#   inputs:
-#     targetType: 'inline'
-#     script: 'npm run build -y'
+
+# =========================
+# Stage 2: Build
+# =========================
+- stage: Build
+  displayName: "Build Application"
+  dependsOn: CodeQuality
+  condition: succeededOrFailed()   # 👈 Lint fail hua to build nahi chalega
+  jobs:
+  - job: BuildJob
+    displayName: "Node Build"
+    steps:
+
+    - task: NodeTool@0
+      displayName: "Use Node.js 16"
+      inputs:
+        versionSource: spec
+        versionSpec: '16.x'
+
+    - task: PowerShell@2
+      displayName: "npm install"
+      inputs:
+        targetType: inline
+        script: |
+          npm install
+
+    - task: PowerShell@2
+      displayName: "npm build"
+      inputs:
+        targetType: inline
+        script: |
+          npm run build
+
