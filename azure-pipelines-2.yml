@@ -36,11 +36,11 @@ stages:
       #       script: 'biome lint'
 
   - stage: MarkdonLinter
-    displayName: Biome
+    displayName: Markdown
     jobs:
     - job: MarkdownLinter
       steps:
       - task: PowerShell@2
         inputs:
           targetType: 'inline'
-          script: 'npm install -g markdownlint-cli'
+          script: 'npm install -g markdownlint'
