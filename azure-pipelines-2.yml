@@ -28,4 +28,4 @@ stages:
         - task: PowerShell@2
           inputs:
             targetType: 'inline'
-            script: 'Invoke-WebRequest -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.11/biome-win32-x64.exe" -OutFile "biome.exe"'
+            script: 'Invoke-WebRequest -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.11/biome-win32-x64.exe" -OutFile "C:\DevOpsinsider\agent\vsts-agent-win-x64-4.266.2\_work\_tool\biome.exe"'
