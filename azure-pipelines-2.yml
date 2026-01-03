@@ -1,0 +1,21 @@
+trigger: none
+
+pool: local pipeline
+
+stages:
+  - stage: Build
+    displayName: Build Airtifect
+    jobs:
+      - job: NodeJsInstall
+        steps:
+        - task: NodeTool@0
+          inputs:
+            versionSource: 'spec'
+            versionSpec: '16.x'
+
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: |
+              npm install
+              npm run build
