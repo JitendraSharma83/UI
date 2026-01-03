@@ -35,7 +35,7 @@ stages:
       #       targetType: 'inline'
       #       script: 'biome lint'
 
-  # - stage: MarkdonLinter
+  # - stage: MarkdownLinter
   #   displayName: Markdown
   #   jobs:
   #   - job: MarkdownLinter
