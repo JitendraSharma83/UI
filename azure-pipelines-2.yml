@@ -35,12 +35,22 @@ stages:
       #       targetType: 'inline'
       #       script: 'biome lint'
 
-  - stage: MarkdonLinter
-    displayName: Markdown
+  # - stage: MarkdonLinter
+  #   displayName: Markdown
+  #   jobs:
+  #   - job: MarkdownLinter
+  #     steps:
+  #     - task: PowerShell@2
+  #       inputs:
+  #         targetType: 'inline'
+  #         script: 'npm install markdownlint'
+
+  - stage: 
+    displayName: StyleLint
     jobs:
-    - job: MarkdownLinter
+    - job: CSSLinter
       steps:
       - task: PowerShell@2
         inputs:
           targetType: 'inline'
-          script: 'npm install markdownlint'
+          script: 'npm install stylelint'
