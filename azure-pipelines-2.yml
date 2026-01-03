@@ -33,4 +33,4 @@ stages:
         - task: PowerShell@2
           inputs:
             targetType: 'inline'
-            script: 'run biome lint'
+            script: 'biome lint'
