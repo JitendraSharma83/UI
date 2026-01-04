@@ -71,6 +71,12 @@ stages:
                 Expand-Archive sonarqube.zip -DestinationPath .
                 cd "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\sonarqube-25.12.0.117093\bin\windows-x86-64"
                 .\StartSonar.bat
+                sonar-scanner `
+                        -D sonar.projectKey=todo-app `
+                        -D sonar.host.url=http://localhost:9000 `
+                        -D sonar.token=$(SONAR_TOKEN)
+                
+
                 
           
                   
