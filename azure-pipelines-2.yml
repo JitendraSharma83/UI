@@ -58,23 +58,19 @@ stages:
      - stage: SonarQube
        displayName: SAST Scan
        jobs:
-        - job: SonarQubeInstall
+        - job: SonarQubeDownload
           steps:
-          # - task: PowerShell@2
-          #   inputs:
-          #     targetType: 'inline'
-          #     script: |
-          #       cd "$(System.DefaultWorkingDirectory)"
-          #       Invoke-WebRequest `
-          #         -Uri https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-25.12.0.117093.zip `
-          #         -OutFile sonarqube.zip
-          #       Expand-Archive sonarqube.zip -DestinationPath .
-                
           - task: PowerShell@2
             inputs:
               targetType: 'inline'
               script: |
+                cd "$(System.DefaultWorkingDirectory)"
+                Invoke-WebRequest `
+                  -Uri https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-25.12.0.117093.zip `
+                  -OutFile sonarqube.zip
+                Expand-Archive sonarqube.zip -DestinationPath .
                 cd "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\sonarqube-25.12.0.117093\bin\windows-x86-64"
                 .\StartSonar.bat
+                
           
                   
