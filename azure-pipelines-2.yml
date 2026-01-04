@@ -3,80 +3,88 @@ trigger: none
 pool: local pipeline
 
 stages:
-#   - stage: Build
-#     displayName: Build Airtifect
-#     jobs:
-#       - job: NodeJsInstall
-#         steps:
-#         - task: NodeTool@0
-#           inputs:
-#             versionSource: 'spec'
-#             versionSpec: '16.x'
+  - stage: Build
+    displayName: Build Airtifect
+    jobs:
+      - job: NodeJsInstall
+        steps:
+        - task: NodeTool@0
+          inputs:
+            versionSource: 'spec'
+            versionSpec: '16.x'
 
-#         - task: PowerShell@2
-#           inputs:
-#             targetType: 'inline'
-#             script: |
-#               npm install
-#               npm run build
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: |
+              npm install
+              npm run build
 
-  # - stage: Linting
-  #   displayName: Biome
-  #   jobs:
-      # - job: Biome
-      #   steps:
-      #   - task: PowerShell@2
-      #     inputs:
-      #       targetType: 'inline'
-      #       script: 'Invoke-WebRequest -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.11/biome-win32-x64.exe" -OutFile "C:\DevOpsinsider\agent\vsts-agent-win-x64-4.266.2\_work\_tool\biome.exe"'
+  - stage: Linting
+    displayName: Biome
+    jobs:
+      - job: Biome
+        steps:
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: 'Invoke-WebRequest -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.11/biome-win32-x64.exe" -OutFile "C:\DevOpsinsider\agent\vsts-agent-win-x64-4.266.2\_work\_tool\biome.exe"'
 
-      #   - task: PowerShell@2
-      #     inputs:
-      #       targetType: 'inline'
-      #       script: 'biome lint'
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: 'biome lint'
 
-  # - stage: MarkdownLinter
-  #   displayName: Markdown
-  #   jobs:
-  #   - job: MarkdownLinter
-  #     steps:
-  #     - task: PowerShell@2
-  #       inputs:
-  #         targetType: 'inline'
-  #         script: 'npm install markdownlint'
+  - stage: MarkdownLinter
+    displayName: Markdown
+    jobs:
+    - job: MarkdownLinter
+      steps:
+      - task: PowerShell@2
+        inputs:
+          targetType: 'inline'
+          script: 'npm install markdownlint'
 
-  # - stage: 
-  #   displayName: StyleLint
-  #   jobs:
-  #   - job: CSSLinter
-  #     steps:
-  #     - task: PowerShell@2
-  #       inputs:
-  #         targetType: 'inline'
-  #         script: 'npm install stylelint'
+  - stage: StyleLint
+    displayName: StyleLint
+    jobs:
+    - job: CSSLinter
+      steps:
+      - task: PowerShell@2
+        inputs:
+          targetType: 'inline'
+          script: 'npm install stylelint'
 
-     - stage: SonarQube
-       displayName: SAST Scan
-       jobs:
-        - job: SonarQubeDownload
-          steps:
-          - task: PowerShell@2
-            inputs:
-              targetType: 'inline'
-              script: |
-                cd "$(System.DefaultWorkingDirectory)"
-                Invoke-WebRequest `
-                  -Uri https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-25.12.0.117093.zip `
-                  -OutFile sonarqube.zip
-                Expand-Archive sonarqube.zip -DestinationPath .
-                cd "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\sonarqube-25.12.0.117093\bin\windows-x86-64"
-                .\StartSonar.bat
-                sonar-scanner `
-                        -D sonar.projectKey=todo-app `
-                        -D sonar.host.url=http://localhost:9000 `
-                        -D sonar.token=$(SONAR_TOKEN)
-                
+  - stage: SonarQube
+    displayName: SAST Scan
+    jobs:
+    - job: SonarQubeDownload
+      steps:
+      - task: PowerShell@2
+        inputs:
+          targetType: 'inline'
+          script: |
+            cd "$(System.DefaultWorkingDirectory)"
+                            Invoke-WebRequest `
+                              -Uri https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-25.12.0.117093.zip `
+                              -OutFile sonarqube.zip
+                            Expand-Archive sonarqube.zip -DestinationPath .
+                            cd "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\sonarqube-25.12.0.117093\bin\windows-x86-64"
+                            .\StartSonar.bat
+                            sonar-scanner `
+                                    -D sonar.projectKey=todo-app `
+                                    -D sonar.host.url=http://localhost:9000 `
+                                    -D sonar.token=$(SONAR_TOKEN)
 
-                
-          
-                  
+  - stage: SCA
+    displayName: SAST Scan
+    jobs:
+    - job: SonarQubeDownload
+      steps:
+      - task: PowerShell@2
+        inputs:
+          targetType: 'inline'
+          script: |
+            cd "$(System.DefaultWorkingDirectory)"
+            npm install -g retire
+            retire
