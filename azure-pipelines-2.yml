@@ -64,10 +64,9 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-                cd C:\DevOpsinsider\agent\vsts-agent-win-x64-4.266.2\_work\_tool
                 Invoke-WebRequest `
                   -Uri https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-25.12.0.117093.zip `
-                  -OutFile sonarqube.zip
+                  -OutFile $(System.DefaultWorkingDirectory)\sonarqube.zip
                 Expand-Archive sonarqube.zip -DestinationPath .
 
                   
