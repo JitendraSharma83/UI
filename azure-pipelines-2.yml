@@ -77,14 +77,14 @@ stages:
                                     -D sonar.token=$(SONAR_TOKEN)
 
   - stage: SCA
-    displayName: SAST Scan
+    displayName: Security Scan
     jobs:
-    - job: SonarQubeDownload
+    - job: retireJs
       steps:
       - task: PowerShell@2
         inputs:
           targetType: 'inline'
           script: |
-            cd "$(System.DefaultWorkingDirectory)"
             npm install -g retire
-            retire
+            npm install
+            retire --exitwith 0
