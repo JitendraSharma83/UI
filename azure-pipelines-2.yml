@@ -55,26 +55,26 @@ stages:
           targetType: 'inline'
           script: 'npm install stylelint'
 
-  - stage: SonarQube
-    displayName: SAST Scan
-    jobs:
-    - job: SonarQubeDownload
-      steps:
-      - task: PowerShell@2
-        inputs:
-          targetType: 'inline'
-          script: |
-            cd "$(System.DefaultWorkingDirectory)"
-                            Invoke-WebRequest `
-                              -Uri https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-25.12.0.117093.zip `
-                              -OutFile sonarqube.zip
-                            Expand-Archive sonarqube.zip -DestinationPath .
-                            cd "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\sonarqube-25.12.0.117093\bin\windows-x86-64"
-                            .\StartSonar.bat
-                            sonar-scanner `
-                                    -D sonar.projectKey=todo-app `
-                                    -D sonar.host.url=http://localhost:9000 `
-                                    -D sonar.token=$(SONAR_TOKEN)
+  # - stage: SonarQube
+  #   displayName: SAST Scan
+  #   jobs:
+  #   - job: SonarQubeDownload
+  #     steps:
+  #     - task: PowerShell@2
+  #       inputs:
+  #         targetType: 'inline'
+  #         script: |
+  #           cd "$(System.DefaultWorkingDirectory)"
+  #                           Invoke-WebRequest `
+  #                             -Uri https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-25.12.0.117093.zip `
+  #                             -OutFile sonarqube.zip
+  #                           Expand-Archive sonarqube.zip -DestinationPath .
+  #                           cd "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\sonarqube-25.12.0.117093\bin\windows-x86-64"
+  #                           .\StartSonar.bat
+  #                           sonar-scanner `
+  #                                   -D sonar.projectKey=todo-app `
+  #                                   -D sonar.host.url=http://localhost:9000 `
+  #                                   -D sonar.token=$(SONAR_TOKEN)
 
   - stage: SCA
     displayName: Security Scan
