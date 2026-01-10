@@ -1,29 +1,24 @@
 trigger: none
 
 pool:
-  name: remote pool
-
-variables:
-  NODE_VERSION: '16.x'
+  name: remote pool   # Linux self-hosted agent
 
 stages:
 
-# =======================
-# 1️⃣ LINTING STAGE
-# =======================
+# =========================
+# 1️⃣ LINTING
+# =========================
 - stage: Linting
-  displayName: Code Linting
+  displayName: Linting
   jobs:
   - job: Lint
-    displayName: Run Linters
     steps:
 
     - task: NodeTool@0
       inputs:
-        versionSpec: $(NODE_VERSION)
+        versionSpec: '16.x'
 
     - task: PowerShell@2
-      displayName: Install Dependencies
       inputs:
         targetType: inline
         script: |
@@ -35,7 +30,7 @@ stages:
         targetType: inline
         script: |
           npm install -g @biomejs/biome
-          biome lint .
+          biome lint . --write
 
     - task: PowerShell@2
       displayName: Markdown Lint
@@ -53,20 +48,19 @@ stages:
           npm install -g stylelint stylelint-config-standard
           stylelint "**/*.css"
 
-# =======================
-# 2️⃣ SECURITY (SCA)
-# =======================
-- stage: Security
-  displayName: Software Composition Analysis
+# =========================
+# 2️⃣ SOFTWARE / SCA
+# =========================
+- stage: SCA
+  displayName: Security Scan
   dependsOn: Linting
   jobs:
-  - job: SCA
-    displayName: RetireJS Scan
+  - job: retireJs
     steps:
 
     - task: NodeTool@0
       inputs:
-        versionSpec: $(NODE_VERSION)
+        versionSpec: '16.x'
 
     - task: PowerShell@2
       inputs:
@@ -74,21 +68,21 @@ stages:
         script: |
           npm install
           npm install -g retire
-          retire --severity high --exitwith 0
+          retire --exitwith 0
 
-# =======================
+# =========================
 # 3️⃣ BUILD
-# =======================
+# =========================
 - stage: Build
   displayName: Build Artifact
-  dependsOn: Security
+  dependsOn: SCA
   jobs:
-  - job: BuildApp
+  - job: Build
     steps:
 
     - task: NodeTool@0
       inputs:
-        versionSpec: $(NODE_VERSION)
+        versionSpec: '16.x'
 
     - task: PowerShell@2
       inputs:
