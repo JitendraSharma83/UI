@@ -121,3 +121,11 @@ stages:
               downloadType: 'single'
               artifactName: 'game artifact'
               downloadPath: '$(System.DefaultWorkingDirectory)/game'
+
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                sudo apt update && sudo apt install nginx -y
+                cd game 
+                sudo cp -rf * /var/www/html
