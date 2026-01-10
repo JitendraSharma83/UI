@@ -1,7 +1,7 @@
 trigger:
 - none
 
-pool: local pipeline
+pool: remote pool
 
 stages:
 - stage: SoftwareCompositionAnalysis
