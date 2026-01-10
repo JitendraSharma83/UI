@@ -1,90 +1,98 @@
 trigger: none
 
-pool: remote pool
+pool:
+  name: remote pool
+
+variables:
+  NODE_VERSION: '16.x'
 
 stages:
-  - stage: Build
-    displayName: Build Airtifect
-    jobs:
-      - job: NodeJsInstall
-        steps:
-        - task: NodeTool@0
-          inputs:
-            versionSource: 'spec'
-            versionSpec: '16.x'
 
-        - task: PowerShell@2
-          inputs:
-            targetType: 'inline'
-            script: |
-              npm install
-              npm run build
+# =======================
+# 1️⃣ LINTING STAGE
+# =======================
+- stage: Linting
+  displayName: Code Linting
+  jobs:
+  - job: Lint
+    displayName: Run Linters
+    steps:
 
-  - stage: Linting
-    displayName: Biome
-    jobs:
-      - job: Biome
-        steps:
-        - task: PowerShell@2
-          inputs:
-            targetType: 'inline'
-            script: 'Invoke-WebRequest -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.11/biome-win32-x64.exe" -OutFile "C:\DevOpsinsider\agent\vsts-agent-win-x64-4.266.2\_work\_tool\biome.exe"'
+    - task: NodeTool@0
+      inputs:
+        versionSpec: $(NODE_VERSION)
 
-        - task: PowerShell@2
-          inputs:
-            targetType: 'inline'
-            script: 'biome lint'
+    - task: PowerShell@2
+      displayName: Install Dependencies
+      inputs:
+        targetType: inline
+        script: |
+          npm install
 
-  - stage: MarkdownLinter
-    displayName: Markdown
-    jobs:
-    - job: MarkdownLinter
-      steps:
-      - task: PowerShell@2
-        inputs:
-          targetType: 'inline'
-          script: 'npm install markdownlint'
+    - task: PowerShell@2
+      displayName: Biome Lint
+      inputs:
+        targetType: inline
+        script: |
+          npm install -g @biomejs/biome
+          biome lint .
 
-  - stage: StyleLint
-    displayName: StyleLint
-    jobs:
-    - job: CSSLinter
-      steps:
-      - task: PowerShell@2
-        inputs:
-          targetType: 'inline'
-          script: 'npm install stylelint'
+    - task: PowerShell@2
+      displayName: Markdown Lint
+      inputs:
+        targetType: inline
+        script: |
+          npm install -g markdownlint-cli
+          markdownlint .
 
-  # - stage: SonarQube
-  #   displayName: SAST Scan
-  #   jobs:
-  #   - job: SonarQubeDownload
-  #     steps:
-  #     - task: PowerShell@2
-  #       inputs:
-  #         targetType: 'inline'
-  #         script: |
-  #           cd "$(System.DefaultWorkingDirectory)"
-  #                           Invoke-WebRequest `
-  #                             -Uri https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-25.12.0.117093.zip `
-  #                             -OutFile sonarqube.zip
-  #                           Expand-Archive sonarqube.zip -DestinationPath .
-  #                           cd "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\sonarqube-25.12.0.117093\bin\windows-x86-64"
-  #                           .\StartSonar.bat
-  #                           sonar-scanner `
-  #                                   -D sonar.projectKey=todo-app `
-  #                                   -D sonar.host.url=http://localhost:9000 `
-  #                                   -D sonar.token=$(SONAR_TOKEN)
+    - task: PowerShell@2
+      displayName: StyleLint
+      inputs:
+        targetType: inline
+        script: |
+          npm install -g stylelint stylelint-config-standard
+          stylelint "**/*.css"
 
-  - stage: SCA
-    displayName: Security Scan
-    jobs:
-    - job: retireJs
-      steps:
-      - task: PowerShell@2
-        inputs:
-          targetType: 'inline'
-          script: |
-            npm install -g retire
-            npm install
-            retire --exitwith 0
+# =======================
+# 2️⃣ SECURITY (SCA)
+# =======================
+- stage: Security
+  displayName: Software Composition Analysis
+  dependsOn: Linting
+  jobs:
+  - job: SCA
+    displayName: RetireJS Scan
+    steps:
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: $(NODE_VERSION)
+
+    - task: PowerShell@2
+      inputs:
+        targetType: inline
+        script: |
+          npm install
+          npm install -g retire
+          retire --severity high --exitwith 0
+
+# =======================
+# 3️⃣ BUILD
+# =======================
+- stage: Build
+  displayName: Build Artifact
+  dependsOn: Security
+  jobs:
+  - job: BuildApp
+    steps:
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: $(NODE_VERSION)
+
+    - task: PowerShell@2
+      inputs:
+        targetType: inline
+        script: |
+          npm install
+          npm run build
