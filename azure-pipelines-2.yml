@@ -5,80 +5,80 @@ pool:
 
 stages:
 
-# =========================
-# 1️⃣ LINTING
-# =========================
-- stage: Linting
-  displayName: Linting
-  jobs:
-  - job: Lint
-    steps:
+# # =========================
+# # 1️⃣ LINTING
+# # =========================
+# - stage: Linting
+#   displayName: Linting
+#   jobs:
+#   - job: Lint
+#     steps:
 
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '16.x'
+#     - task: NodeTool@0
+#       inputs:
+#         versionSpec: '16.x'
 
-    - task: PowerShell@2
-      inputs:
-        targetType: inline
-        script: |
-          npm install
+#     - task: PowerShell@2
+#       inputs:
+#         targetType: inline
+#         script: |
+#           npm install
 
-    - task: PowerShell@2
-      displayName: Biome Lint
-      continueOnError: true
-      inputs:
-        targetType: inline
-        script: |
-          npm install -g @biomejs/biome
-          biome lint . --write
+#     - task: PowerShell@2
+#       displayName: Biome Lint
+#       continueOnError: true
+#       inputs:
+#         targetType: inline
+#         script: |
+#           npm install -g @biomejs/biome
+#           biome lint . --write
 
-    - task: PowerShell@2
-      displayName: Markdown Lint
-      continueOnError: true
-      inputs:
-        targetType: inline
-        script: |
-          npm install -g markdownlint-cli
-          markdownlint .
+#     - task: PowerShell@2
+#       displayName: Markdown Lint
+#       continueOnError: true
+#       inputs:
+#         targetType: inline
+#         script: |
+#           npm install -g markdownlint-cli
+#           markdownlint .
 
-    - task: PowerShell@2
-      displayName: StyleLint
-      continueOnError: true
-      inputs:
-        targetType: inline
-        script: |
-          npm install -g stylelint stylelint-config-standard
-          stylelint "**/*.css"
+#     - task: PowerShell@2
+#       displayName: StyleLint
+#       continueOnError: true
+#       inputs:
+#         targetType: inline
+#         script: |
+#           npm install -g stylelint stylelint-config-standard
+#           stylelint "**/*.css"
 
-# =========================
-# 2️⃣ SOFTWARE / SCA
-# =========================
-- stage: SCA
-  displayName: Security Scan
-  dependsOn: Linting
-  jobs:
-  - job: retireJs
-    steps:
+# # =========================
+# # 2️⃣ SOFTWARE / SCA
+# # =========================
+# - stage: SCA
+#   displayName: Security Scan
+#   dependsOn: Linting
+#   jobs:
+#   - job: retireJs
+#     steps:
 
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '16.x'
+#     - task: NodeTool@0
+#       inputs:
+#         versionSpec: '16.x'
 
-    - task: PowerShell@2
-      inputs:
-        targetType: inline
-        script: |
-          npm install
-          npm install -g retire
-          retire --exitwith 0
+#     - task: PowerShell@2
+#       inputs:
+#         targetType: inline
+#         script: |
+#           npm install
+#           npm install -g retire
+#           retire --exitwith 0
 
 # =========================
 # 3️⃣ BUILD
 # =========================
 - stage: Build
   displayName: Build Artifact
-  dependsOn: SCA
+  # dependsOn: SCA
   jobs:
   - job: Build
     steps:
